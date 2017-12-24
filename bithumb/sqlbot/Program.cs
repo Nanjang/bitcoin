@@ -43,9 +43,6 @@ namespace sqlbot
             string sRespBodyData = String.Empty;
 
             string response = hAPI_Svr.xcoinApiCall("/public/recent_transactions", sParams, ref sRespBodyData);
-            //Console.WriteLine(response);
-
-            //File.WriteAllText("tr.json", response);
 
             TransactionsRootObject root = JsonConvert.DeserializeObject<TransactionsRootObject>(response);
             Console.WriteLine(root.status);
@@ -55,7 +52,6 @@ namespace sqlbot
                 Console.WriteLine(root.data.Count);
                 foreach (Datum data in root.data.Reverse<Datum>())
                 {
-
                     Console.WriteLine(data.transaction_date);
 
                     if (!cache.Contains(data.transaction_date + data.price + data.units_traded + data.type))
@@ -63,7 +59,6 @@ namespace sqlbot
                         SqlAdd.InsertTransaction(data.transaction_date, data.price, data.units_traded, data.type);
                         cache.Add(data.transaction_date + data.price + data.units_traded + data.type);
                     }
-
                 }
             }
             //Console.WriteLine("======");
